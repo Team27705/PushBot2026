@@ -12,34 +12,32 @@ public class DrivingTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
         Servo spotlight = hardwareMap.get(Servo.class, "spotlight");
+        // Store the servo position to maintain it when joystick is released
+        double spotlightPosition = 0.5; // Start at center
 
         waitForStart();
 
         while (opModeIsActive()) {
             // If Left Stick Y is pushed forward, the robot should move forward. If it's pulled
             // back, the robot should move backward.
-            double drive = -gamepad1.left_stick_y; // Invert Y axis for intuitive control
+            double drive = gamepad1.left_stick_y;
             // If Left Stick X is pushed to the right, the robot should turn right. If it's
             // pushed to the left, the robot should turn left.
             double turn = gamepad1.left_stick_x;
 
             // Calculate the power for each motor based on the drive and turn inputs
-            double leftPower = drive + turn;
-            double rightPower = drive - turn;
-
-            // Normalize the power values to ensure they are within the range of -1.0 to 1.0
-            double maxPower = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-            if (maxPower > 1.0) {
-                leftPower /= maxPower;
-                rightPower /= maxPower;
-            }
+            double leftPower = drive - turn;
+            double rightPower = drive + turn;
 
             // Set the calculated power to the drivetrain motors
             drivetrain.setPower(leftPower, rightPower);
 
             // Control the spotlight servo with Right Stick X.
-            // Convert from [-1, 1] to [0, 1].
-            double spotlightPosition = (gamepad1.right_stick_x + 1) / 2;
+            // Only update position if the joystick is being moved (deadzone check)
+            if (Math.abs(gamepad1.right_stick_x) > 0.1) {
+                // Convert from [-1, 1] to [0, 1]
+                spotlightPosition = (gamepad1.right_stick_x + 1) / 2;
+            }
             spotlight.setPosition(spotlightPosition);
         }
     }
