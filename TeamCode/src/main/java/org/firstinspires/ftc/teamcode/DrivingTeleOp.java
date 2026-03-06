@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.RGBIndicator;
 
 @TeleOp(name = "Driving TeleOp", group = "TeleOp")
 public class DrivingTeleOp extends LinearOpMode {
@@ -13,7 +13,7 @@ public class DrivingTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Drivetrain drivetrain = new Drivetrain(hardwareMap);
         Servo spotlight = hardwareMap.get(Servo.class, "spotlight");
-        RevBlinkinLedDriver lightController = hardwareMap.get(RevBlinkinLedDriver.class, "light");
+        RGBIndicator light = RGBIndicator.get(hardwareMap, "led");
 
         // Store the servo position to maintain it when joystick is released
         double spotlightPosition = 0.5; // Start at center
@@ -45,13 +45,13 @@ public class DrivingTeleOp extends LinearOpMode {
 
             // Change LED pattern based on button releases
             if (gamepad1.aWasReleased()) {
-                lightController.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                light.setGreen();
             } else if (gamepad1.bWasReleased()) {
-                lightController.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                light.setRed();
             } else if (gamepad1.xWasReleased()) {
-                lightController.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                light.setBlue();
             } else if (gamepad1.yWasReleased()) {
-                lightController.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                light.setYellow();
             }
         }
     }
